@@ -54,10 +54,15 @@ nohup ./minio server data1 data2 data3 data4 data5 data6 data7 data8 data9 data1
 ## 集群部署
 
 ```shell
-export MINIO_ACCESS_KEY=<ACCESS_KEY>
-export MINIO_SECRET_KEY=<SECRET_KEY>
-minio server http://192.168.1.11/export1 http://192.168.1.11/export2 \
-               http://192.168.1.12/export1 http://192.168.1.12/export2 \
-               http://192.168.1.13/export1 http://192.168.1.13/export2 \
-               http://192.168.1.14/export1 http://192.168.1.14/export2
+cd ~
+cat >> .conf <<EOF
+export MINIO_ACCESS_KEY={自定义AccessKey，最小长度3字符}
+export MINIO_SECRET_KEY={自定义SecretKey，最小长度8字符}
+EOF
+source .bashrc
+cd /opt/minio
+nohup ./minio server http://{ip1}/opt/minio/export1 http://{ip1}/opt/minio/export2 \
+               http://{ip2/opt/minio/export1 http://{ip2}/opt/minio/export2 \
+               http://{ip3}/opt/minio/export1 http://{ip3}/opt/minio/export2 \
+               http://{ip4}/opt/minio/export1 http://{ip4}/opt/minio/export2 >> minio.log 2>&1 &
 ```
