@@ -1,0 +1,105 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--设置log4j2的自身log级别为warn -->
+<configuration status="warn">
+    <properties>
+        <Property name="LOG_PATH">/tmp/qogir/user</Property>
+        <property name="APPDIR" value="log"/>
+        <property name="APPNAME" value="qogirUser"/>
+    </properties>
+    <CustomLevels>
+        <CustomLevel name="OPER" intLevel="150"/>
+    </CustomLevels>
+    <appenders>
+        <console name="STDOUT" target="SYSTEM_OUT">
+            <PatternLayout pattern="[%d][%t][%p][%l][hostAddress:${sys:hostAddress}] %m%n" />
+        </console>
+        <RollingFile name="RollingFileOper" fileName="${LOG_PATH}/${APPDIR}/qogir_oper.log"
+                     filePattern="${LOG_PATH}/${APPDIR}/oper/log-oper-%d{yyyy-MM-dd}.%i.log.gz">
+            <Filters>
+                <ThresholdFilter level="OPER" onMatch="ACCEPT" onMismatch="DENY" />
+            </Filters>
+            <PatternLayout pattern="[%d][%t][%p][%c:%L][hostAddress:${sys:hostAddress}] %m%n" />
+            <Policies>
+                <!-- 归档每天的文件 -->
+                <TimeBasedTriggeringPolicy interval="1" modulate="true" />
+                <!-- 限制单个文件大小 -->
+                <SizeBasedTriggeringPolicy size="100 MB" />
+            </Policies>
+            <!-- 限制每天文件个数 -->
+            <DefaultRolloverStrategy compressionLevel="0" max="10"/>
+        </RollingFile>
+
+        <RollingFile name="RollingFileError" fileName="${LOG_PATH}/${APPDIR}/qogir_error.log"
+                     filePattern="${LOG_PATH}/${APPDIR}/error/log-error-%d{yyyy-MM-dd}.%i.log.gz">
+            <Filters>
+                <ThresholdFilter level="error" onMatch="ACCEPT" onMismatch="DENY" />
+            </Filters>
+            <PatternLayout pattern="[%d][%t][%p][%c:%L][hostAddress:${sys:hostAddress}] %m%n" />
+            <Policies>
+                <!-- 归档每天的文件 -->
+                <TimeBasedTriggeringPolicy interval="1" modulate="true" />
+                <!-- 限制单个文件大小 -->
+                <SizeBasedTriggeringPolicy size="100 MB" />
+            </Policies>
+            <!-- 限制每天文件个数 -->
+            <DefaultRolloverStrategy compressionLevel="0" max="10"/>
+        </RollingFile>
+
+        <RollingFile name="RollingFileWarn" fileName="${LOG_PATH}/${APPDIR}/qogir_warn.log"
+                     filePattern="${LOG_PATH}/${APPDIR}/warn/log-warn-%d{yyyy-MM-dd}.%i.log.gz">
+            <Filters>
+                <ThresholdFilter level="warn" onMatch="ACCEPT" onMismatch="DENY" />
+            </Filters>
+            <PatternLayout pattern="[%d][%t][%p][%c:%L][hostAddress:${sys:hostAddress}] %m%n" />
+            <Policies>
+                <!-- 归档每天的文件 -->
+                <TimeBasedTriggeringPolicy interval="1" modulate="true" />
+                <!-- 限制单个文件大小 -->
+                <SizeBasedTriggeringPolicy size="100 MB" />
+            </Policies>
+            <!-- 限制每天文件个数 -->
+            <DefaultRolloverStrategy compressionLevel="0" max="10"/>
+        </RollingFile>
+
+        <RollingFile name="RollingFileInfo" fileName="${LOG_PATH}/${APPDIR}/qogir_info.log"
+                     filePattern="${LOG_PATH}/${APPDIR}/info/log-info-%d{yyyy-MM-dd}.%i.log.gz">
+            <Filters>
+                <ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY" />
+            </Filters>
+            <PatternLayout pattern="[%d][%t][%p][%c:%L][hostAddress:${sys:hostAddress}] %m%n" />
+            <Policies>
+                <!-- 归档每天的文件 -->
+                <TimeBasedTriggeringPolicy interval="1" modulate="true" />
+                <!-- 限制单个文件大小 -->
+                <SizeBasedTriggeringPolicy size="100 MB" />
+            </Policies>
+            <!-- 限制每天文件个数 -->
+            <DefaultRolloverStrategy compressionLevel="0" max="10"/>
+        </RollingFile>
+
+        <RollingFile name="RollingFileDebug" fileName="${LOG_PATH}/${APPDIR}/qogir_debug.log"
+                     filePattern="${LOG_PATH}/${APPDIR}/debug/log-debug-%d{yyyy-MM-dd}.%i.log.gz">
+            <Filters>
+                <ThresholdFilter level="debug" onMatch="ACCEPT" onMismatch="DENY" />
+            </Filters>
+            <PatternLayout pattern="[%d][%t][%p][%c:%L][hostAddress:${sys:hostAddress}] %m%n" />
+            <Policies>
+                <!-- 归档每天的文件 -->
+                <TimeBasedTriggeringPolicy interval="1" modulate="true" />
+                <!-- 限制单个文件大小 -->
+                <SizeBasedTriggeringPolicy size="100 MB" />
+            </Policies>
+            <!-- 限制每天文件个数 -->
+            <DefaultRolloverStrategy compressionLevel="0" max="10"/>
+        </RollingFile>
+
+
+    </appenders>
+
+    <loggers>
+        <root level="info">
+            <appender-ref ref="STDOUT" />
+        </root>
+    </loggers>
+
+</configuration>
