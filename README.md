@@ -66,3 +66,43 @@ nohup ./minio server http://{ip1}/opt/minio/export1 http://{ip1}/opt/minio/expor
                http://{ip3}/opt/minio/export1 http://{ip3}/opt/minio/export2 \
                http://{ip4}/opt/minio/export1 http://{ip4}/opt/minio/export2 >> minio.log 2>&1 &
 ```
+               
+## 权限配置
+```
+{
+	"Version": "2012-10-17",
+        "Statement": [
+            {
+                "Action": ["s3:GetBucketLocation"],
+                "Sid": "",
+                "Resource": ["arn:aws:s3:::damimi"],
+                "Effect": "Allow",
+                "Principal": {"AWS": "*"}
+            },
+            {
+                "Action": ["s3:ListBucket"],
+                "Sid": "",
+                "Resource": ["arn:aws:s3:::damimi"],
+                "Effect": "Allow",
+                "Principal": {"AWS": "*"}
+            },
+            {
+                "Action": ["s3:ListBucketMultipartUploads"],
+                "Sid": "",
+                "Resource": ["arn:aws:s3:::damimi"],
+                "Effect": "Allow",
+                "Principal": {"AWS": "*"}
+            },
+            {
+                "Action": ["s3:ListMultipartUploadParts",
+                            "s3:GetObject",
+                            "s3:AbortMultipartUpload",
+                            "s3:PutObject"],
+                "Sid": "",
+                "Resource": ["arn:aws:s3:::damimi/*"],
+                "Effect": "Allow",
+                "Principal": {"AWS": "*"}
+            }
+        ]
+    }
+```
