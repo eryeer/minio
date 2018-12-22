@@ -65,8 +65,10 @@ nohup ./minio server http://{ip1}/opt/minio/export1 http://{ip1}/opt/minio/expor
                http://{ip2/opt/minio/export1 http://{ip2}/opt/minio/export2 \
                http://{ip3}/opt/minio/export1 http://{ip3}/opt/minio/export2 \
                http://{ip4}/opt/minio/export1 http://{ip4}/opt/minio/export2 >> minio.log 2>&1 &
+```
                
 ## 权限配置
+```
 {
 	"Version": "2012-10-17",
         "Statement": [
