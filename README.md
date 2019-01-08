@@ -1,15 +1,6 @@
 **minio安装手册**
+[TOC]
 
-<!-- TOC -->
-
-- [1. 安装](#1-安装)
-    - [1.1. 下载minio](#11-下载minio)
-    - [1.2. 保存AccessKey和SecretKey](#12-保存accesskey和secretkey)
-    - [1.3. 启动minio](#13-启动minio)
-    - [1.4. 登录UI页面](#14-登录ui页面)
-    - [集群部署](#集群部署)
-
-<!-- /TOC -->
 
 # 1. 安装
 
@@ -48,10 +39,8 @@ EOF
 ```shell
 nohup ./minio server data1 data2 data3 data4 data5 data6 data7 data8 data9 data10 data11 data12 >> minio.log 2>&1 &
 ```
-## 1.4. 登录UI页面 
-浏览器输入 http://{minioIp}:9000
 
-## 集群部署
+## 1.4. 集群部署
 
 ```shell
 cd ~
@@ -66,43 +55,122 @@ nohup ./minio server http://{ip1}/opt/minio/export1 http://{ip1}/opt/minio/expor
                http://{ip3}/opt/minio/export1 http://{ip3}/opt/minio/export2 \
                http://{ip4}/opt/minio/export1 http://{ip4}/opt/minio/export2 >> minio.log 2>&1 &
 ```
+
+## 1.5. 登录web页面创建bucket
+
+浏览器输入 http://{minioIp}:9000
+新建三个bucket 名为activity、item、ads 并点击左侧桶名称上的Edit Policy，将访问规则配置为
+prefix=*    policy=ReadOnly
                
-## 权限配置
+## 1.6. 权限配置
+
+### 1.6.1. 下载mc客户端
+
+```shell
+cd /opt/minio
+wget https://dl.minio.io/client/mc/release/linux-amd64/mc
+chmod +x mc
+./mc -help
 ```
+
+### 1.6.2. 配置mc的访问token
+
+```shell
+vim ~/.mc/config.json
+```
+
+填写url为http://localhost:9000一项的accessKey和secretKey，如
+
+```json
+...
+"local": {
+    "url": "http://localhost:9000",
+    "accessKey": "0PW11BMC1U61L4I36J5I",
+    "secretKey": "z5khXN+724is841X7PAIg32Kwk6w3+FRJPW4oWyl",
+    "api": "S3v4",
+    "lookup": "auto"
+}
+...
+```
+
+### 1.6.3. 新建并编辑配置文件/opt/minio/config.json
+
+```json
 {
-	"Version": "2012-10-17",
-        "Statement": [
-            {
-                "Action": ["s3:GetBucketLocation"],
-                "Sid": "",
-                "Resource": ["arn:aws:s3:::damimi"],
-                "Effect": "Allow",
-                "Principal": {"AWS": "*"}
-            },
-            {
-                "Action": ["s3:ListBucket"],
-                "Sid": "",
-                "Resource": ["arn:aws:s3:::damimi"],
-                "Effect": "Allow",
-                "Principal": {"AWS": "*"}
-            },
-            {
-                "Action": ["s3:ListBucketMultipartUploads"],
-                "Sid": "",
-                "Resource": ["arn:aws:s3:::damimi"],
-                "Effect": "Allow",
-                "Principal": {"AWS": "*"}
-            },
-            {
-                "Action": ["s3:ListMultipartUploadParts",
-                            "s3:GetObject",
-                            "s3:AbortMultipartUpload",
-                            "s3:PutObject"],
-                "Sid": "",
-                "Resource": ["arn:aws:s3:::damimi/*"],
-                "Effect": "Allow",
-                "Principal": {"AWS": "*"}
-            }
-        ]
-    }
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Action": ["s3:GetBucketLocation"],
+            "Sid": "",
+            "Resource": ["arn:aws:s3:::activity",
+                        "arn:aws:s3:::ads",
+                        "arn:aws:s3:::item"],
+            "Effect": "Allow",
+            "Principal": {"AWS": "*"}
+        },
+        {
+            "Action": ["s3:ListBucket"],
+            "Sid": "",
+            "Resource": ["arn:aws:s3:::activity",
+                        "arn:aws:s3:::ads",
+                        "arn:aws:s3:::item"],
+            "Effect": "Allow",
+            "Principal": {"AWS": "*"}
+        },
+        {
+            "Action": ["s3:ListBucketMultipartUploads"],
+            "Sid": "",
+            "Resource": ["arn:aws:s3:::activity",
+                        "arn:aws:s3:::ads",
+                        "arn:aws:s3:::item"],
+            "Effect": "Allow",
+            "Principal": {"AWS": "*"}
+        },
+        {
+            "Action": ["s3:ListMultipartUploadParts",
+                        "s3:GetObject",
+                        "s3:AbortMultipartUpload",
+                        "s3:PutObject",
+                        "s3:DeleteObject"],
+            "Sid": "",
+            "Resource": ["arn:aws:s3:::activity/*",
+                        "arn:aws:s3:::ads/*",
+                        "arn:aws:s3:::item/*"],
+            "Effect": "Allow",
+            "Principal": {"AWS": "*"}
+        }
+    ]
+}
+```
+
+### 1.6.4. 查看集群名称
+
+```shell
+./mc config host ls
+#获取一下集群的名称，确定为local
+> local: http://localhost:9000 0PW11BMC1U61L4I36J5I z5khXN+724is841X7PAIg32Kwk6w3+FRJPW4oWyl  S3v4   auto 
+```
+
+### 1.6.5. 添加规则
+
+```shell
+./mc admin policy add local/ javapolicy /opt/minio/config.json
+```
+
+查看配置好的规则列表
+
+```shell
+./mc admin policy list local
+```
+
+### 1.6.6. 添加用户
+
+```shell
+./mc admin user add local/ yanfa yanfa-2018 javapolicy
+```
+
+查看配置好的用户列表
+
+```shell
+./mc admin user list local
 ```
