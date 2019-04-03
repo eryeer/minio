@@ -13,6 +13,7 @@ webapps/
 out/
 
 !doc/
+!images/
 !client/
 !qogirAPI/
 !miniodemo/
