@@ -105,6 +105,9 @@ nohup ./minio server http://{ip1}/opt/minio/export1 http://{ip1}/opt/minio/expor
 
 ## 5.5. 登录web页面创建bucket
 
+* bucket
+    文件的命名空间，对应不同的bucket可以建立不同的文件访问规则。
+
 浏览器输入 http://{minioIp}:9000
 新建一个bucket 名为activity 
 
